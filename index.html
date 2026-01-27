@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <title>Tauri + React</title>
+  </head>
+
+  <body>
+    <svg style="position: absolute; width: 0; height: 0;">
+      <defs>
+        <filter id="liquid-glass">
+          <feTurbulence type="fractalNoise" baseFrequency="0.01 0.003" numOctaves="2" result="noise" />
+          <feDisplacementMap in="SourceGraphic" in2="noise" scale="3" xChannelSelector="R" yChannelSelector="G" />
+          <feGaussianBlur stdDeviation="0.5" />
+          <feComponentTransfer>
+            <feFuncA type="linear" slope="1.2" />
+          </feComponentTransfer>
+        </filter>
+        
+        <filter id="glow">
+          <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+          <feMerge>
+            <feMergeNode in="coloredBlur"/>
+            <feMergeNode in="SourceGraphic"/>
+          </feMerge>
+        </filter>
+
+        <filter id="shimmer">
+          <feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="4" result="turbulence"/>
+          <feDisplacementMap in2="turbulence" in="SourceGraphic" scale="2" xChannelSelector="R" yChannelSelector="G"/>
+          <feGaussianBlur stdDeviation="0.3"/>
+        </filter>
+      </defs>
+    </svg>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>

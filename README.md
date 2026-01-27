@@ -2,6 +2,9 @@
 
 An open‑source, local‑first Markdown editor built with React and Tauri, featuring multiple editing modes for a smooth and playful writing experience ✨
 
+<img width="2560" height="1334" alt="1000001590" src="https://github.com/user-attachments/assets/b55d446e-9152-465e-9758-1a8c634eb20a" />
+
+
 A modern, full-featured WYSIWYG Markdown editor built with Tauri and React.
 
 ## Key Features
@@ -121,6 +124,7 @@ Tab state
 ## License
 
 Licensed under the Prosperity Public License — free for non‑commercial use.
+
 
 
 

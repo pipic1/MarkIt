@@ -1,4 +1,4 @@
-# MarkIt
+# MarkIt - Open Source Markdown Writer
 
 An open‑source, local‑first Markdown editor built with React and Tauri, featuring multiple editing modes for a smooth and playful writing experience ✨
 
@@ -129,6 +129,7 @@ Tab state
 ## License
 
 Licensed under the Prosperity Public License — free for non‑commercial use.
+
 
 
 

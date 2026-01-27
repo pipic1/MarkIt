@@ -1,4 +1,6 @@
-# Markdown Word
+# MarkItDown 
+
+An open‑source, local‑first Markdown editor built with React and Tauri, featuring multiple editing modes for a smooth and playful writing experience ✨
 
 A modern, full-featured WYSIWYG Markdown editor built with Tauri and React.
 
@@ -119,4 +121,5 @@ Tab state
 ## License
 
 Licensed under the Prosperity Public License — free for non‑commercial use.
+
 

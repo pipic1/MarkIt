@@ -7,6 +7,8 @@ An open‑source, local‑first Markdown editor built with React and Tauri, feat
 
 A modern, full-featured WYSIWYG Markdown editor built with Tauri and React.
 
+You can test it on the web or install it locally : https://markit-writer.netlify.app/
+
 ## Key Features
 
 Editing
@@ -124,6 +126,7 @@ Tab state
 ## License
 
 Licensed under the Prosperity Public License — free for non‑commercial use.
+
 
 
 

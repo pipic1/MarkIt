@@ -90,6 +90,9 @@ function App() {
   const [theme, setTheme] = useState(
     () => localStorage.getItem("mdw:theme") || "light",
   );
+  const [systemTheme, setSystemTheme] = useState(
+    () => window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"
+  );
   const [accent, setAccent] = useState(
     () => localStorage.getItem("mdw:accent") || themePresets.light.accent,
   );
@@ -210,7 +213,15 @@ function App() {
   }, [editor, markdown]);
 
   useEffect(() => {
-    const preset = themePresets[theme] ?? themePresets.light;
+    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+    const handler = (e) => setSystemTheme(e.matches ? "dark" : "light");
+    mediaQuery.addEventListener("change", handler);
+    return () => mediaQuery.removeEventListener("change", handler);
+  }, []);
+
+  useEffect(() => {
+    const activeTheme = theme === "auto" ? systemTheme : theme;
+    const preset = themePresets[activeTheme] ?? themePresets.light;
 
     // Appliquer le thème au document aussi
     setEditorBg(preset.editorBg);
@@ -227,7 +238,7 @@ function App() {
     root.style.setProperty("--editor-text", preset.editorText);
     root.style.setProperty("--editor-font", fontFamily);
     root.style.setProperty("--editor-size", `${fontSize}px`);
-    root.setAttribute("data-theme", theme);
+    root.setAttribute("data-theme", activeTheme);
 
     localStorage.setItem("mdw:theme", theme);
     localStorage.setItem("mdw:accent", preset.accent);
@@ -235,7 +246,7 @@ function App() {
     localStorage.setItem("mdw:fontSize", String(fontSize));
     localStorage.setItem("mdw:editorBg", preset.editorBg);
     localStorage.setItem("mdw:editorText", preset.editorText);
-  }, [theme, fontFamily, fontSize]);
+  }, [theme, systemTheme, fontFamily, fontSize]);
 
   useEffect(() => {
     const handler = (event) => {
@@ -369,41 +380,55 @@ function App() {
   };
 
   const handleExportPdf = async () => {
-    if (!exportRef.current) return;
+    if (!exportRef.current || !editor) return;
 
-    const exportPdfWeb = () => {
-      html2pdf()
-        .from(exportRef.current)
-        .set({
-          margin: 12,
-          filename: filePath ? filePath.split(/[\\\/]/).pop().replace(/\.(md|markdown)$/i, ".pdf") : "document.pdf",
-          html2canvas: { scale: 2 },
-          jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
-        })
-        .save();
-      setStatus("PDF exporté");
+    // Mise à jour manuelle du contenu avant export
+    exportRef.current.innerHTML = editor.getHTML();
+
+    const filename = filePath
+      ? filePath.split(/[\\\/]/).pop().replace(/\.(md|markdown)$/i, ".pdf")
+      : "document.pdf";
+
+    const opt = {
+      margin: 15,
+      filename: filename,
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: {
+        scale: 2,
+        useCORS: true,
+        letterRendering: true,
+        logging: false
+      },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
     };
+
+    setStatus("Génération du PDF...");
 
     if (isTauri()) {
       const selected = await save({
         filters: [{ name: "PDF", extensions: ["pdf"] }],
       });
-      if (!selected) return;
-      const worker = html2pdf()
-        .from(exportRef.current)
-        .set({
-          margin: 12,
-          filename: "document.pdf",
-          html2canvas: { scale: 2 },
-          jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
-        })
-        .toPdf();
-      const pdf = await worker.get("pdf");
-      const arrayBuffer = pdf.output("arraybuffer");
-      await writeFile(selected, new Uint8Array(arrayBuffer));
-      setStatus("PDF exporté");
+      if (!selected) {
+        setStatus("Prêt");
+        return;
+      }
+      try {
+        const pdfBlob = await html2pdf().from(exportRef.current).set(opt).output('blob');
+        const arrayBuffer = await pdfBlob.arrayBuffer();
+        await writeFile(selected, new Uint8Array(arrayBuffer));
+        setStatus("PDF exporté");
+      } catch (error) {
+        console.error(error);
+        setStatus("Erreur lors de l'export PDF");
+      }
     } else {
-      exportPdfWeb();
+      try {
+        await html2pdf().from(exportRef.current).set(opt).save();
+        setStatus("PDF exporté");
+      } catch (error) {
+        console.error(error);
+        setStatus("Erreur lors de l'export PDF");
+      }
     }
   };
 

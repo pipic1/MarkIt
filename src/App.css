@@ -1401,3 +1401,67 @@ button:active {
 .toolbar {
   transition: all 0.15s ease-out;
 }
+
+@media print {
+  .header,
+  .toolbar,
+  .status-bar,
+  .tabs-bar,
+  .window-controls,
+  .file-menu,
+  .settings-popup,
+  .settings-backdrop,
+  .context-menu-backdrop,
+  .ribbon-toggle-btn {
+    display: none !important;
+  }
+
+  .app {
+    height: auto !important;
+    overflow: visible !important;
+    background: white !important;
+  }
+
+  body {
+    background: white !important;
+    overflow: visible !important;
+  }
+
+  .workspace {
+    display: block !important;
+    overflow: visible !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  .panel {
+    border: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+    backdrop-filter: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  .panel::before {
+    display: none !important;
+  }
+
+  .editor-panel {
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .editor-content {
+    padding: 0 !important;
+    min-height: auto !important;
+    background: white !important;
+    color: black !important;
+  }
+
+  .ProseMirror {
+    background: white !important;
+    color: black !important;
+  }
+}

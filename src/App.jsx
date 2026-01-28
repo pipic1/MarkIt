@@ -442,43 +442,10 @@ function App() {
     }
   };
 
-  const handlePrint = async () => {
-    if (!exportRef.current) return;
-
-    // Générer un PDF temporaire pour l'impression
-    try {
-      const worker = html2pdf()
-        .from(exportRef.current)
-        .set({
-          margin: 12,
-          filename: "impression.pdf",
-          html2canvas: { scale: 2 },
-          jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
-        });
-
-      const pdf = worker.output('blob');
-      await pdf.then((blob) => {
-        const url = URL.createObjectURL(blob);
-        const printWindow = window.open(url, '_blank');
-
-        if (!printWindow) {
-          setStatus("Astuce : Exportez en PDF puis imprimez depuis votre lecteur PDF");
-          return;
-        }
-
-        printWindow.onload = () => {
-          setTimeout(() => {
-            printWindow.print();
-          }, 500);
-        };
-
-        setStatus("Ouverture de l'aperçu d'impression...");
-      });
-    } catch (error) {
-      setStatus("Erreur d'impression. Utilisez Export PDF puis imprimez le fichier.");
-      console.error(error);
-      return;
-    }
+  const handlePrint = () => {
+    window.print();
+    setStatus("Impression en cours...");
+    setTimeout(() => setStatus("Prêt"), 2000);
   };
 
   const handleNew = () => {

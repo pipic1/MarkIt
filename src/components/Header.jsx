@@ -1,6 +1,7 @@
 import { getCurrentWindow } from "@tauri-apps/api/window";
 import TabsBar from "./TabsBar";
 import { isTauri } from "../utils/platform";
+import logo from "../assets/icons/64x64.png";
 
 export default function Header({
   onUndo,
@@ -32,7 +33,7 @@ export default function Header({
   return (
     <header className="header">
       <div className="header-left">
-        <img src="src/assets/icons/64x64.png" alt="Logo" className="header-logo" />
+        <img src={logo} alt="Logo" className="header-logo" />
         <h1>MarkItDown</h1>
         <div className="header-actions">
           <button

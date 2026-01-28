@@ -24,6 +24,7 @@ import htmlToDocx from "html-to-docx";
 import MarkdownIt from "markdown-it";
 import { open, save } from "@tauri-apps/plugin-dialog";
 import { readTextFile, writeFile } from "@tauri-apps/plugin-fs";
+import { isTauri } from "./utils/platform";
 import Header from "./components/Header";
 import Toolbar from "./components/Toolbar";
 import FileMenu from "./components/FileMenu";
@@ -111,7 +112,7 @@ function App() {
   const lastUpdateSource = useRef("editor");
   const exportRef = useRef(null);
   const isSyncingFromTab = useRef(false);
-  
+
   const stats = useMemo(() => {
     const words = markdown.trim().split(/\s+/).filter(Boolean).length;
     const chars = markdown.length;
@@ -261,12 +262,30 @@ function App() {
   });
 
   const handleOpen = async () => {
-    const selected = await open({
-      filters: [{ name: "Markdown", extensions: ["md", "markdown"] }],
-      multiple: false,
-    });
-    if (!selected || Array.isArray(selected)) return;
-    const contents = await readTextFile(selected);
+    let selected;
+    let contents;
+
+    if (isTauri()) {
+      selected = await open({
+        filters: [{ name: "Markdown", extensions: ["md", "markdown"] }],
+        multiple: false,
+      });
+      if (!selected || Array.isArray(selected)) return;
+      contents = await readTextFile(selected);
+    } else {
+      const input = document.createElement("input");
+      input.type = "file";
+      input.accept = ".md,.markdown";
+
+      const file = await new Promise((resolve) => {
+        input.onchange = (e) => resolve(e.target.files[0]);
+        input.click();
+      });
+
+      if (!file) return;
+      selected = file.name;
+      contents = await file.text();
+    }
 
     // Check if file is already open
     const existingTab = tabs.find((tab) => tab.filePath === selected);
@@ -299,6 +318,11 @@ function App() {
   };
 
   const handleSave = async () => {
+    if (!isTauri()) {
+      await handleSaveAs();
+      return;
+    }
+
     if (!filePath) {
       await handleSaveAs();
       return;
@@ -315,62 +339,112 @@ function App() {
   };
 
   const handleSaveAs = async () => {
-    const selected = await save({
-      filters: [{ name: "Markdown", extensions: ["md"] }],
-    });
-    if (!selected) return;
-    await writeFile(selected, new TextEncoder().encode(markdown));
-    setFilePath(selected);
-    setTabs((prevTabs) => {
-      const newTabs = prevTabs.map((tab) =>
-        tab.id === activeTabId ? { ...tab, isModified: false, filePath: selected, title: selected.split(/[\\\/]/).pop() } : tab
-      );
-      localStorage.setItem("mdw:tabs", JSON.stringify(newTabs));
-      return newTabs;
-    });
-    localStorage.setItem("mdw:filePath", selected);
-    setStatus("Document sauvegardé");
+    if (isTauri()) {
+      const selected = await save({
+        filters: [{ name: "Markdown", extensions: ["md"] }],
+      });
+      if (!selected) return;
+      await writeFile(selected, new TextEncoder().encode(markdown));
+      setFilePath(selected);
+      setTabs((prevTabs) => {
+        const newTabs = prevTabs.map((tab) =>
+          tab.id === activeTabId ? { ...tab, isModified: false, filePath: selected, title: selected.split(/[\\\/]/).pop() } : tab
+        );
+        localStorage.setItem("mdw:tabs", JSON.stringify(newTabs));
+        return newTabs;
+      });
+      localStorage.setItem("mdw:filePath", selected);
+      setStatus("Document sauvegardé");
+    } else {
+      const filename = filePath ? (filePath.split(/[\\\/]/).pop().endsWith(".md") ? filePath.split(/[\\\/]/).pop() : filePath.split(/[\\\/]/).pop() + ".md") : "document.md";
+      const blob = new Blob([markdown], { type: "text/markdown" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      a.click();
+      URL.revokeObjectURL(url);
+      setStatus("Document téléchargé");
+    }
   };
 
   const handleExportPdf = async () => {
     if (!exportRef.current) return;
-    const selected = await save({
-      filters: [{ name: "PDF", extensions: ["pdf"] }],
-    });
-    if (!selected) return;
-    const worker = html2pdf()
-      .from(exportRef.current)
-      .set({
-        margin: 12,
-        filename: "document.pdf",
-        html2canvas: { scale: 2 },
-        jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
-      })
-      .toPdf();
-    const pdf = await worker.get("pdf");
-    const arrayBuffer = pdf.output("arraybuffer");
-    await writeFile(selected, new Uint8Array(arrayBuffer));
-    setStatus("PDF exporté");
+
+    const exportPdfWeb = () => {
+      html2pdf()
+        .from(exportRef.current)
+        .set({
+          margin: 12,
+          filename: filePath ? filePath.split(/[\\\/]/).pop().replace(/\.(md|markdown)$/i, ".pdf") : "document.pdf",
+          html2canvas: { scale: 2 },
+          jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
+        })
+        .save();
+      setStatus("PDF exporté");
+    };
+
+    if (isTauri()) {
+      const selected = await save({
+        filters: [{ name: "PDF", extensions: ["pdf"] }],
+      });
+      if (!selected) return;
+      const worker = html2pdf()
+        .from(exportRef.current)
+        .set({
+          margin: 12,
+          filename: "document.pdf",
+          html2canvas: { scale: 2 },
+          jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
+        })
+        .toPdf();
+      const pdf = await worker.get("pdf");
+      const arrayBuffer = pdf.output("arraybuffer");
+      await writeFile(selected, new Uint8Array(arrayBuffer));
+      setStatus("PDF exporté");
+    } else {
+      exportPdfWeb();
+    }
   };
 
   const handleExportDocx = async () => {
     if (!exportRef.current) return;
-    const selected = await save({
-      filters: [{ name: "DOCX", extensions: ["docx"] }],
-    });
-    if (!selected) return;
-    const arrayBuffer = await htmlToDocx(exportRef.current.innerHTML, null, {
-      table: { row: { cantSplit: true } },
-      footer: true,
-      pageNumber: true,
-    });
-    await writeFile(selected, new Uint8Array(arrayBuffer));
-    setStatus("DOCX exporté");
+
+    const exportDocxWeb = async () => {
+      const blob = await htmlToDocx(exportRef.current.innerHTML, null, {
+        table: { row: { cantSplit: true } },
+        footer: true,
+        pageNumber: true,
+      });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filePath ? filePath.split(/[\\\/]/).pop().replace(/\.(md|markdown)$/i, ".docx") : "document.docx";
+      a.click();
+      URL.revokeObjectURL(url);
+      setStatus("DOCX exporté");
+    };
+
+    if (isTauri()) {
+      const selected = await save({
+        filters: [{ name: "DOCX", extensions: ["docx"] }],
+      });
+      if (!selected) return;
+      const arrayBuffer = await htmlToDocx(exportRef.current.innerHTML, null, {
+        table: { row: { cantSplit: true } },
+        footer: true,
+        pageNumber: true,
+      });
+      await writeFile(selected, new Uint8Array(arrayBuffer));
+      setStatus("DOCX exporté");
+    } else {
+      await exportDocxWeb();
+    }
   };
 
   const handlePrint = async () => {
     if (!exportRef.current) return;
-    
+
     // Générer un PDF temporaire pour l'impression
     try {
       const worker = html2pdf()
@@ -381,23 +455,23 @@ function App() {
           html2canvas: { scale: 2 },
           jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
         });
-      
+
       const pdf = worker.output('blob');
       await pdf.then((blob) => {
         const url = URL.createObjectURL(blob);
         const printWindow = window.open(url, '_blank');
-        
+
         if (!printWindow) {
           setStatus("Astuce : Exportez en PDF puis imprimez depuis votre lecteur PDF");
           return;
         }
-        
+
         printWindow.onload = () => {
           setTimeout(() => {
             printWindow.print();
           }, 500);
         };
-        
+
         setStatus("Ouverture de l'aperçu d'impression...");
       });
     } catch (error) {
@@ -405,8 +479,6 @@ function App() {
       console.error(error);
       return;
     }
-
-    // Write the content to the print window
   };
 
   const handleNew = () => {
@@ -540,14 +612,14 @@ function App() {
   return (
     <div className="app" onDrop={handleDrop} onDragOver={handleDragOver}>
       {showWelcome ? (
-        <WelcomeScreen 
+        <WelcomeScreen
           onNew={handleNew}
           onOpen={handleOpen}
           onShowSettings={() => setShowSettings(true)}
         />
       ) : (
         <>
-          <Header 
+          <Header
             onUndo={() => editor?.chain().focus().undo().run()}
             onRedo={() => editor?.chain().focus().redo().run()}
             canUndo={editor?.can().undo()}
@@ -561,7 +633,7 @@ function App() {
           />
 
           <section className={`workspace ${showCode ? "split" : "single"}`}>
-            <Toolbar 
+            <Toolbar
               editor={editor}
               activeTab={activeTab}
               setActiveTab={setActiveTab}
@@ -588,7 +660,7 @@ function App() {
             )}
           </section>
 
-          <StatusBar 
+          <StatusBar
             status={status}
             stats={stats}
             showCode={showCode}
@@ -597,7 +669,7 @@ function App() {
             onCopyMarkdown={handleCopyMarkdown}
           />
 
-          <FileMenu 
+          <FileMenu
             show={showFileMenu}
             onClose={() => setShowFileMenu(false)}
             onNew={handleNew}
@@ -609,7 +681,7 @@ function App() {
             onPrint={handlePrint}
           />
 
-          <SettingsPopup 
+          <SettingsPopup
             show={showSettings}
             onClose={() => setShowSettings(false)}
             theme={theme}

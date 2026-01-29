@@ -383,7 +383,13 @@ function App() {
     if (!exportRef.current || !editor) return;
 
     // Mise à jour manuelle du contenu avant export
-    exportRef.current.innerHTML = editor.getHTML();
+    // On enveloppe dans les classes nécessaires pour récupérer les styles de l'éditeur
+    // On force un fond blanc pour le PDF
+    exportRef.current.innerHTML = `
+      <div class="editor-content ProseMirror" style="background: white !important; color: black !important; min-height: auto !important;">
+        ${editor.getHTML()}
+      </div>
+    `;
 
     const filename = filePath
       ? filePath.split(/[\\\/]/).pop().replace(/\.(md|markdown)$/i, ".pdf")

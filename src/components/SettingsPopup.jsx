@@ -40,6 +40,7 @@ export default function SettingsPopup({
             <label>
               <span>Thème</span>
               <select value={theme} onChange={(e) => setTheme(e.target.value)}>
+                <option value="auto">Auto (Système)</option>
                 <option value="light">Clair</option>
                 <option value="dark">Sombre</option>
                 <option value="sepia">Sepia</option>

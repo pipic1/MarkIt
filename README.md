@@ -1,5 +1,11 @@
 # MarkIt - Open Source Markdown Writer
 
+## Status
+
+[![Release v0.1](https://github.com/pipic1/MarkIt/actions/workflows/main.yml/badge.svg)](https://github.com/pipic1/MarkIt/actions/workflows/main.yml)
+
+## The project
+
 An open‑source, local‑first Markdown editor built with React and Tauri, featuring multiple editing modes for a smooth and playful writing experience ✨
 
 ![1000001592](https://github.com/user-attachments/assets/3c60378d-fad1-4515-bea5-4c0265e50310)
@@ -129,6 +135,7 @@ Tab state
 ## License
 
 Licensed under the Prosperity Public License — free for non‑commercial use.
+
 
 
 

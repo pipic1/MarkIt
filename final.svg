@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="500" height="500" xmlns:bx="https://boxy-svg.com">
+  <defs>
+    <linearGradient id="a" x1="114.5" x2="114.5" y1="139.7" y2="337.3" gradientTransform="matrix(1.9 -.5 .2 1 -184 132)" gradientUnits="userSpaceOnUse">
+      <stop offset="0" style="stop-color:#2452a1"></stop>
+      <stop offset="1" style="stop-color:rgb(0% 10.272% 48.147%)"></stop>
+    </linearGradient>
+    <linearGradient id="b" x1="209.4" x2="209.4" y1="146.2" y2="289.5" gradientTransform="matrix(1.7 -1 1 1.8 -404 4)" gradientUnits="userSpaceOnUse">
+      <stop offset="0" style="stop-color:#3cbbe8"></stop>
+      <stop offset="1" style="stop-color:#295ab4"></stop>
+    </linearGradient>
+    <linearGradient id="c" x1="334.7" x2="334.7" y1="146.5" y2="343" gradientTransform="matrix(1.9 .4 -.4 1.8 -110 -341)" gradientUnits="userSpaceOnUse">
+      <stop offset="0" style="stop-color:#215cc2"></stop>
+      <stop offset="1" style="stop-color:#242992"></stop>
+    </linearGradient>
+    <linearGradient id="g" x1="263" x2="263" y1="222.9" y2="287.8" gradientTransform="matrix(1.9 -.5 .5 2 -335 -88)" gradientUnits="userSpaceOnUse">
+      <stop offset="0" style="stop-color:#2b549d"></stop>
+      <stop offset="1" style="stop-color:#162b70"></stop>
+    </linearGradient>
+    <linearGradient id="e" x1="334.3" x2="334.3" y1="146.2" y2="282.1" gradientTransform="matrix(1.9 .6 -.5 1.7 -80 -365)" gradientUnits="userSpaceOnUse">
+      <stop offset="0" style="stop-color:#0b2669"></stop>
+      <stop offset="1" style="stop-color:#22368b"></stop>
+    </linearGradient>
+    <linearGradient id="d" x1="165.7" x2="165.7" y1="146.7" y2="284.8" gradientTransform="matrix(1.844726, -0.599313, 0.717393, 1.897825, -371.299694, -90.515677)" gradientUnits="userSpaceOnUse">
+      <stop offset="0" style="stop-color:#0e2d79"></stop>
+      <stop offset="1" style="stop-color:#263693"></stop>
+    </linearGradient>
+    <bx:guide x="41.714" y="378.485" angle="0"></bx:guide>
+    <bx:guide x="135.875" y="410.526" angle="0"></bx:guide>
+    <bx:guide x="317.658" y="341.213" angle="90"></bx:guide>
+    <bx:guide x="370.921" y="254.715" angle="0"></bx:guide>
+    <bx:guide x="465.234" y="285.632" angle="0"></bx:guide>
+    <bx:guide x="267.757" y="63.308" angle="90"></bx:guide>
+    <bx:guide x="239.476" y="446.531" angle="90"></bx:guide>
+    <bx:guide x="254.974" y="226.906" angle="90"></bx:guide>
+    <bx:guide x="247.226" y="379.013" angle="90"></bx:guide>
+    <bx:guide x="153.564" y="127.277" angle="0"></bx:guide>
+    <bx:guide x="353.63" y="127.277" angle="0"></bx:guide>
+    <bx:guide x="352.723" y="81.684" angle="90"></bx:guide>
+    <bx:guide x="60.563" y="105.388" angle="0"></bx:guide>
+    <bx:guide x="446.178" y="87.695" angle="0"></bx:guide>
+    <bx:guide x="496.081" y="362.049" angle="90"></bx:guide>
+    <bx:guide x="194.422" y="426.696" angle="90"></bx:guide>
+    <bx:guide x="461.548" y="69.684" angle="90"></bx:guide>
+    <bx:guide x="305.965" y="374.751" angle="0"></bx:guide>
+    <bx:guide x="247.591" y="328.313" angle="90"></bx:guide>
+    <bx:export>
+      <bx:file format="svg" path="Sans titre.svg" excluded="true"></bx:file>
+      <bx:file format="svg" path="Sans titre 2.svg"></bx:file>
+    </bx:export>
+    <bx:guide x="461.505" y="95.193" angle="0"></bx:guide>
+    <bx:grid x="42.936" y="64.063" width="93.866" height="128.624"></bx:grid>
+    <bx:guide x="205.78" y="410.43" angle="90"></bx:guide>
+  </defs>
+  <path d="M 41.714 362.049 C 41.714 374.759 47.138 382.842 60.563 392.282 L 109.905 427.996 C 122.489 438.582 136.802 427.878 136.998 417.516 L 135.875 226.906 L 53.883 66.651 C 49.76 72.326 41.714 81.684 41.714 81.684 L 41.714 362.049 Z" style="fill:url(#a)"></path>
+  <path d="M 465.234 92.741 C 465.234 89.535 462.103 75.922 459.469 72.59 L 371 226 L 371 409.906 C 370.921 426.696 388.118 433.824 398.017 426.905 L 446.178 392.867 C 460.533 382.37 465.234 379.013 465.234 361.748 L 465.234 92.741 Z" style="fill: url(#c);"></path>
+  <path d="M 51.919 67.556 L 44.76 71.974 L 136 332 L 135.875 226.906 L 51.919 67.556 Z" style="fill: url(#d); fill-opacity: 0.68;"></path>
+  <path d="M 454.386 81.684 C 454.66 82.02 455.226 82.814 455.415 83.131 L 370.921 341.213 L 370.921 226.906 L 454.386 81.684 Z" style="fill: url(#e); fill-opacity: 0.69;"></path>
+  <path d="M 253 245 L 301.084 334.315 L 318.57 319.22 L 446.263 96.418 C 446.263 96.418 453.329 83.704 458.386 83.798 C 466.68 83.952 465.234 96.159 465.234 96.159 C 465.234 81.892 461.505 63.308 446.178 63.308 L 371.068 63.308 C 353.63 63.308 353.63 63.308 343.803 81.051 L 253 245 Z" style="fill: rgb(66, 191, 236);"></path>
+  <path d="M 271.399 211.775 L 302.655 328.313 L 297.866 326.518 L 253 245 L 271.399 211.775 Z" style="fill:url(#g);fill-opacity:.46"></path>
+  <path d="M 41.714 81.684 L 41.714 94.679 C 41.714 94.679 43.745 86.387 50.497 86.224 C 57.3 86.06 60.563 95.211 60.563 95.211 L 193.955 327.777 C 200 337.776 205.252 341.213 217.217 341.213 L 289.325 341.213 C 300 341.213 305.965 341.213 313.406 328.334 L 323.367 310.777 C 323.367 310.777 311.727 328.313 305.965 328.313 C 302.538 328.313 298.974 327.434 296.691 323.876 L 162.571 80.134 C 153.564 63.308 153.564 63.308 135.875 63.308 L 60.105 63.308 C 53.169 63.308 48.445 66.707 45.523 70.813 C 42.883 74.522 41.714 78.808 41.714 81.684 Z" style="fill:url(#b)"></path>
+  <ellipse style="fill: rgba(216, 216, 216, 0.573); visibility: hidden;" cx="448.317" cy="80.229" rx="16.921" ry="16.921"></ellipse>
+</svg>
